@@ -32,8 +32,8 @@ class CreateLink extends Component {
 
   render() {
     return (
-      <View>
-        <View style={s.form}>
+      <View style={s.form}>
+        <View style={s.inputs}>
           <TextInput
             style={s.input}
             value={this.state.description}
@@ -55,6 +55,9 @@ class CreateLink extends Component {
 
 const s = StyleSheet.create({
   form: {
+    flex: 1,
+  },
+  inputs: {
     width: '100%',
     margin: 30,
     alignItems: 'stretch',
