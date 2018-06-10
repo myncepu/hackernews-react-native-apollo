@@ -58,7 +58,7 @@ const s = StyleSheet.create({
     flex: 1,
   },
   inputs: {
-    width: '100%',
+    width: '80%',
     margin: 30,
     alignItems: 'stretch',
   },

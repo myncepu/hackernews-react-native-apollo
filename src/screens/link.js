@@ -28,7 +28,7 @@ class Link extends Component {
 
 const styles = StyleSheet.create({
   link: {
-    fontSize: 30,
+    fontSize: 20,
     borderColor: 'gray',
     borderWidth: StyleSheet.hairlineWidth,
   },
