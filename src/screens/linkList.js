@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
   linkList: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
   },
 })
