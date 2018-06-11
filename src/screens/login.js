@@ -60,7 +60,7 @@ class Login extends Component {
       this.setState({hasLogin: true, authToken: token})
       this._saveUserData(token)
     }
-    // this.props.navigation.navigate('CreateLink')
+    this.props.navigation.navigate('App')
   }
 
   _saveUserData = async (token) => {

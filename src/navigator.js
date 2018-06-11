@@ -5,17 +5,30 @@
  * Distributed under terms of the MIT license.
  */
 import React from 'react'
-import { createBottomTabNavigator } from 'react-navigation'
+import { createBottomTabNavigator, createSwitchNavigator } from 'react-navigation'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import LinkList from './screens/linkList'
 import CreateLink from './screens/createLink'
 import Login from './screens/login'
+import AuthLoadingScreen from './screens/authLoading'
+
+const AuthoNavigator = createSwitchNavigator(
+  {
+    AuthLoading: AuthLoadingScreen,
+    App: CreateLink,
+    Auth: Login,
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  }
+)
 
 export default createBottomTabNavigator({
-  Login,
+  // Login,
   LinkList,
-  CreateLink,
+  // CreateLink,
+  AuthoNavigator,
 }, {
   navigationOptions: ({navigation}) => ({
     tabBarIcon: ({focused, tintColor}) => {
@@ -25,7 +38,7 @@ export default createBottomTabNavigator({
         case 'LinkList':
           iconName = `ios-home${focused ? '' : '-outline'}`
           break
-        case 'CreateLink':
+        case 'AuthoNavigator':
           iconName = `ios-create${focused ? '' : '-outline'}`
           break
         case 'Login':
