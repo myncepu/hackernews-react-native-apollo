@@ -10,6 +10,7 @@ import {
   Text,
   ActivityIndicator,
   StyleSheet,
+  FlatList,
 } from 'react-native'
 import {graphql} from 'react-apollo'
 import gql from 'graphql-tag'
@@ -30,18 +31,26 @@ class LinkList extends Component {
 
     if (feedQuery && feedQuery.error) {
       return (
-        <Text>{feedQuery.error.message}</Text>
+        <View style={styles.container}>
+          <Text>{feedQuery.error.message}</Text>
+        </View>
       )
     }
 
-    const linksToRender = feedQuery.feed.links
+    const linksToRender = feedQuery.feed
     return (
       <View style={styles.linkList}>
-        {
-          linksToRender.map(link => (
-            <Link key={link.id} link={link} />
-          ))
-        }
+        <FlatList
+          data={linksToRender.links}
+          keyExtractor={(item) => {
+            return item.id
+          }}
+          renderItem={({item}) => {
+            return (
+              <Link key={item.id} link={item} />
+            )
+          }}
+        />
       </View>
     )
   }
