@@ -8,6 +8,7 @@ import React, {Component} from 'react'
 import {
   View,
   Text,
+  ActivityIndicator,
   StyleSheet,
 } from 'react-native'
 import {graphql} from 'react-apollo'
@@ -21,7 +22,9 @@ class LinkList extends Component {
 
     if (feedQuery && feedQuery.loading) {
       return (
-        <Text>Loading</Text>
+        <View style={styles.container}>
+          <ActivityIndicator size='large' color='tomato' />
+        </View>
       )
     }
 
@@ -45,6 +48,10 @@ class LinkList extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center'
+  },
   linkList: {
     flex: 1,
     backgroundColor: '#fff',
