@@ -10,8 +10,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 
 import LinkList from './screens/linkList'
 import CreateLink from './screens/createLink'
+import Login from './screens/login'
 
 export default createBottomTabNavigator({
+  Login,
   LinkList,
   CreateLink,
 }, {
@@ -25,6 +27,9 @@ export default createBottomTabNavigator({
           break
         case 'CreateLink':
           iconName = `ios-create${focused ? '' : '-outline'}`
+          break
+        case 'Login':
+          iconName = `ios-person${focused ? '' : '-outline'}`
           break
       }
       return <Ionicons name={iconName} size={25} color={tintColor} />

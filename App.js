@@ -3,6 +3,9 @@ import {ApolloProvider} from 'react-apollo'
 import {ApolloClient} from 'apollo-client'
 import {HttpLink} from 'apollo-link-http'
 import {InMemoryCache} from 'apollo-cache-inmemory'
+import {ApolloLink} from 'apollo-client-preset'
+
+import {AUTH_TOKEN} from './src/constants'
 
 import App from './src'
 
