@@ -26,11 +26,12 @@ class Link extends Component {
   }
 }
 
+const borderWidthRatio = 10
 const styles = StyleSheet.create({
   link: {
     fontSize: 20,
     borderColor: 'tomato',
-    borderWidth: StyleSheet.hairlineWidth * 10,
+    borderWidth: StyleSheet.hairlineWidth * borderWidthRatio,
     margin: 5,
   },
 })
