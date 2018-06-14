@@ -18,6 +18,16 @@ import gql from 'graphql-tag'
 import Link from './link'
 
 class LinkList extends Component {
+
+  _updateCacheAfterVote = (store, createVote, linkId) => {
+    // 1
+    const data = store.readQuery({ query: FEED_QUERY })
+    // 2
+    const votedLink = data.feed.links.find(link => link.id === linkId)
+    votedLink.votes = createVote.link.votes
+    // 3
+    store.writeQuery({query: FEED_QUERY, data})
+  }
   render() {
     const {feedQuery} = this.props
 
@@ -37,20 +47,23 @@ class LinkList extends Component {
       )
     }
 
-    const linksToRender = feedQuery.feed
+    const linksToRender = feedQuery.feed.links
+
     return (
-      <View style={styles.linkList}>
-        <FlatList
-          data={linksToRender.links}
-          keyExtractor={(item) => {
-            return item.id
-          }}
-          renderItem={({item}) => {
-            return (
-              <Link key={item.id} link={item} />
-            )
-          }}
-        />
+      <View style={styles.container}>
+        <View style={styles.linkList}>
+          <FlatList
+            data={linksToRender}
+            keyExtractor={(item) => {
+              return item.id
+            }}
+            renderItem={({item}) => {
+              return (
+                <Link key={item.id} link={item} updaeStoreAfterVote={this._updateCacheAfterVote} />
+              )
+            }}
+          />
+        </View>
       </View>
     )
   }
@@ -59,6 +72,7 @@ class LinkList extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 20,
     justifyContent: 'center'
   },
   linkList: {
@@ -68,7 +82,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const FEED_QUERY = gql`
+export const FEED_QUERY = gql`
   query FeedQuery{
     feed {
       links {
@@ -76,6 +90,16 @@ const FEED_QUERY = gql`
         createdAt
         url
         description
+        postedBy {
+          id
+          name
+        }
+        votes {
+          id
+          user {
+           id
+          }
+        }
       }
     }
   }
