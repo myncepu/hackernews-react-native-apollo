@@ -1,36 +1,33 @@
-import React from 'react';
+import React from 'react'
 import {
   Dimensions,
   LayoutAnimation,
-  NativeModules,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-} from 'react-native';
-import { withNavigation } from 'react-navigation';
-
-// TODO: remove dependency on Expo
-import { Icon } from 'expo';
+} from 'react-native'
+import { withNavigation } from 'react-navigation'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const Layout = {
   window: {
     width: Dimensions.get('window').width,
   },
-};
-const SearchContainerHorizontalMargin = 10;
+}
+const SearchContainerHorizontalMargin = 10
 const SearchContainerWidth =
-  Layout.window.width - SearchContainerHorizontalMargin * 2;
+  Layout.window.width - SearchContainerHorizontalMargin * 2
 
 const SearchIcon = () =>
   <View style={styles.searchIconContainer}>
-    <Icon.Ionicons name="ios-search" size={18} color="#ccc" />
-  </View>;
+    <Ionicons name="ios-search" size={18} color="#ccc" />
+  </View>
 
 @withNavigation
-class PlaceholderButtonSearchBar extends React.PureComponent {
+export class PlaceholderButtonSearchBar extends React.PureComponent {
   render() {
     return (
       <View style={styles.container}>
@@ -50,11 +47,11 @@ class PlaceholderButtonSearchBar extends React.PureComponent {
           </View>
         </TouchableWithoutFeedback>
       </View>
-    );
+    )
   }
 
   _handlePress = () => {
-    this.props.navigator.push('search');
+    this.props.navigator.push('search')
   };
 }
 
@@ -70,16 +67,16 @@ export default class SearchBar extends React.PureComponent {
 
   componentDidMount() {
     requestAnimationFrame(() => {
-      this._textInput.focus();
-    });
+      this._textInput.focus()
+    })
   }
 
   _handleLayoutCancelButton = (e: Object) => {
     if (this.state.showCancelButton) {
-      return;
+      return
     }
 
-    const cancelButtonWidth = e.nativeEvent.layout.width;
+    const cancelButtonWidth = e.nativeEvent.layout.width
 
     requestAnimationFrame(() => {
       LayoutAnimation.configureNext({
@@ -93,20 +90,20 @@ export default class SearchBar extends React.PureComponent {
           springDamping: 0.9,
           initialVelocity: 10,
         },
-      });
+      })
 
       this.setState({
         showCancelButton: true,
         inputWidth: SearchContainerWidth - cancelButtonWidth,
-      });
-    });
+      })
+    })
   };
 
   render() {
-    let { inputWidth, showCancelButton } = this.state;
-    let searchInputStyle = {};
+    let { inputWidth, showCancelButton } = this.state
+    let searchInputStyle = {}
     if (this.props.textColor) {
-      searchInputStyle.color = this.props.textColor;
+      searchInputStyle.color = this.props.textColor
     }
 
     return (
@@ -114,7 +111,7 @@ export default class SearchBar extends React.PureComponent {
         <View style={[styles.searchContainer, { width: inputWidth }]}>
           <TextInput
             ref={view => {
-              this._textInput = view;
+              this._textInput = view
             }}
             clearButtonMode="while-editing"
             onChangeText={this._handleChangeText}
@@ -156,25 +153,25 @@ export default class SearchBar extends React.PureComponent {
           </TouchableOpacity>
         </View>
       </View>
-    );
+    )
   }
 
   _handleChangeText = text => {
-    this.setState({ text });
-    this.props.onChangeQuery && this.props.onChangeQuery(text);
+    this.setState({ text })
+    this.props.onChangeQuery && this.props.onChangeQuery(text)
   };
 
   _handleSubmit = () => {
-    let { text } = this.state;
-    this.props.onSubmit && this.props.onSubmit(text);
-    this._textInput.blur();
+    let { text } = this.state
+    this.props.onSubmit && this.props.onSubmit(text)
+    this._textInput.blur()
   };
 
   _handlePressCancelButton = () => {
     if (this.props.onCancelPress) {
-      this.props.onCancelPress(this.props.navigation.goBack);
+      this.props.onCancelPress(this.props.navigation.goBack)
     } else {
-      this.props.navigation.goBack();
+      this.props.navigation.goBack()
     }
   };
 }
@@ -217,4 +214,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingTop: 1,
   },
-});
+})

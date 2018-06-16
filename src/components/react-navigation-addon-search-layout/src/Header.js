@@ -1,23 +1,23 @@
-import React from 'react';
-import { Animated, Dimensions, Platform, StyleSheet, View } from 'react-native';
-import { withNavigation, HeaderBackButton } from 'react-navigation';
-import { Constants } from 'expo';
+import React from 'react'
+import { Animated, Platform, StyleSheet, View } from 'react-native'
+import { withNavigation, HeaderBackButton } from 'react-navigation'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 
-const APPBAR_HEIGHT = Platform.OS === 'ios' ? 50 : 56;
-const STATUSBAR_HEIGHT = Constants.statusBarHeight;
-const TITLE_OFFSET = Platform.OS === 'ios' ? 70 : 56;
+const APPBAR_HEIGHT = Platform.OS === 'ios' ? 50 : 56
+const STATUSBAR_HEIGHT = getStatusBarHeight()
+const TITLE_OFFSET = Platform.OS === 'ios' ? 70 : 56
 
 @withNavigation
 export default class Header extends React.PureComponent {
   static HEIGHT = APPBAR_HEIGHT + STATUSBAR_HEIGHT;
 
   _navigateBack = () => {
-    this.props.navigation.goBack(null);
+    this.props.navigation.goBack(null)
   };
 
   _maybeRenderBackButton = () => {
     if (!this.props.backButton) {
-      return;
+      return
     }
 
     return (
@@ -29,13 +29,13 @@ export default class Header extends React.PureComponent {
         truncatedTitle={this.props.backButtonTruncatedTitle || null}
         titleStyle={this.props.backButtonTitleStyle || null}
       />
-    );
+    )
   };
 
   render() {
-    let headerStyle = {};
+    let headerStyle = {}
     if (this.props.backgroundColor) {
-      headerStyle.backgroundColor = this.props.backgroundColor;
+      headerStyle.backgroundColor = this.props.backgroundColor
     }
 
     return (
@@ -47,16 +47,16 @@ export default class Header extends React.PureComponent {
           </View>
         </View>
       </Animated.View>
-    );
+    )
   }
 }
 
-let platformContainerStyles;
+let platformContainerStyles
 if (Platform.OS === 'ios') {
   platformContainerStyles = {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(0, 0, 0, .3)',
-  };
+  }
 } else {
   platformContainerStyles = {
     shadowColor: 'black',
@@ -66,7 +66,7 @@ if (Platform.OS === 'ios') {
       height: StyleSheet.hairlineWidth,
     },
     elevation: 4,
-  };
+  }
 }
 
 const styles = StyleSheet.create({
@@ -107,4 +107,4 @@ const styles = StyleSheet.create({
     top: 0,
     position: 'absolute',
   },
-});
+})

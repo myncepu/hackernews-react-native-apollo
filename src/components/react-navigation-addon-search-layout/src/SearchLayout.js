@@ -1,11 +1,8 @@
-import React from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import { Platform, StyleSheet, View } from 'react-native'
 
-// TODO: remove dependency on expo
-import { Constants } from 'expo';
-
-import SearchBar from './SearchBar';
-import Header from './Header';
+import SearchBar from './SearchBar'
+import Header from './Header'
 
 export default class SearchLayout extends React.Component {
   static SearchBar = SearchBar;
@@ -22,13 +19,13 @@ export default class SearchLayout extends React.Component {
   };
 
   _handleSubmit = q => {
-    this.props.onSubmit && this.props.onSubmit(q);
+    this.props.onSubmit && this.props.onSubmit(q)
   };
 
   // TODO: debounce
   _handleChangeQuery = q => {
-    this.props.onChangeQuery && this.props.onChangeQuery(q);
-    this.setState({ q });
+    this.props.onChangeQuery && this.props.onChangeQuery(q)
+    this.setState({ q })
   };
 
   render() {
@@ -58,7 +55,7 @@ export default class SearchLayout extends React.Component {
           ? this.props.renderResults(this.state.q)
           : this.props.children}
       </View>
-    );
+    )
   }
 }
 
@@ -66,4 +63,4 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-});
+})
