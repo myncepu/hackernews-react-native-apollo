@@ -6,10 +6,10 @@
  */
 import React from 'react'
 import { Platform } from 'react-native'
-import SearchLayout from 'react-navigation-addon-search-layout'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 
+import SearchLayout from '../components/react-navigation-addon-search-layout'
 import LinkList from './linkList'
 
 class SearchScreen extends React.Component {
@@ -22,7 +22,7 @@ class SearchScreen extends React.Component {
   render() {
     return (
       <SearchLayout
-        headerBackgroundColor='tomato'
+        headerBackgroundColor='green'
         headerTintColor="#fff"
         onChangeQuery={this._handleQueryChange}
         onSubmit={this._executeSearch}
@@ -44,7 +44,7 @@ class SearchScreen extends React.Component {
 
   _handleQueryChange = searchText => {
     this.setState({ searchText })
-  };
+  }
 
   _updateCacheAfterVote = (store, createVote, linkId) => {
     const votedLinkId = this.state.links.findIndex(link => link.id === linkId)
