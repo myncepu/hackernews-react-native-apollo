@@ -4,53 +4,81 @@
  *
  * Distributed under terms of the MIT license.
  */
-import React from 'react'
-import { createBottomTabNavigator, createSwitchNavigator } from 'react-navigation'
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import { Animated } from 'react-native'
+import {
+  createStackNavigator,
+  createSwitchNavigator
+} from 'react-navigation'
 
 import LinkList from './screens/linkList'
 import CreateLink from './screens/createLink'
 import Login from './screens/login'
 import AuthLoadingScreen from './screens/authLoading'
+import SearchScreen from './screens/search'
+import Colors from './constants/Colors'
 
-const AppTabNavigator = createBottomTabNavigator({
-  LinkList,
-  CreateLink,
-  // Login,
-}, {
-  navigationOptions: ({navigation}) => ({
-    tabBarIcon: ({focused, tintColor}) => {
-      const { routeName } = navigation.state
-      let iconName
-      switch (routeName) {
-        case 'LinkList':
-          iconName = `ios-home${focused ? '' : '-outline'}`
-          break
-        case 'CreateLink':
-          iconName = `ios-create${focused ? '' : '-outline'}`
-          break
-        // case 'Login':
-        //   iconName = `ios-person${focused ? '' : '-outline'}`
-        //   break
-      }
-      return <Ionicons name={iconName} size={25} color={tintColor} />
+const MainStack = createStackNavigator(
+  {
+    Links: {
+      screen: LinkList,
     },
-    tabBarOptions: {
-      activeTintColor: 'tomato',
-      inactiveTintColor: 'gray',
-    }
-  })
-})
+    CreateLink: {
+      screen: CreateLink,
+    },
+    Authentication: {
+      screen: Login,
+    },
+  },
+  {
+    initialRouteName: 'Links',
+    cardStyle: {
+      backgroundColor: Colors.almostWhite,
+    },
+    navigationOptions: () => ({
+      headerBackTitle: 'Back',
+      headerPressColorAndroid: Colors.white,
+      headerStyle: {
+        backgroundColor: Colors.orange,
+      },
+      headerTintColor: Colors.white,
+    }),
+  }
+)
 
-const AppNavigator = createSwitchNavigator(
+const AppNavigator = createStackNavigator(
+  {
+    Main: {
+      screen: MainStack,
+    },
+    Search: {
+      screen: SearchScreen,
+    },
+  },
+  {
+    initialRouteName: 'Main',
+    cardStyle: {
+      backgroundColor: Colors.almostWhite,
+    },
+    headerMode: 'none',
+    transitionConfig: () => ({
+      transitionSpec: {
+        duration: 0,
+        timing: Animated.timing,
+      },
+    }),
+    navigationOptions: {
+      gesturesEnabled: false,
+    }
+  }
+)
+
+export default createSwitchNavigator(
   {
     AuthLoading: AuthLoadingScreen,
-    App: AppTabNavigator,
+    App: AppNavigator,
     Auth: Login,
   },
   {
     initialRouteName: 'AuthLoading',
   }
 )
-
-export default AppNavigator
