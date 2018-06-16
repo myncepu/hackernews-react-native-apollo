@@ -9,7 +9,7 @@ import { Platform, StyleSheet } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Touchable from 'react-native-platform-touchable'
 
-import Colors from '../constants/Colors'
+import Colors from '../../constants/Colors'
 
 export default class HeaderIconButton extends Component {
   render() {
@@ -78,7 +78,7 @@ const IconNames = {
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 15,
+    paddingVertical: 5,
     paddingHorizontal: 5,
     marginLeft: Platform.OS === 'ios' ? 12 : 17,
   },
