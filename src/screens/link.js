@@ -10,22 +10,37 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  AsyncStorage,
 } from 'react-native'
 import {graphql} from 'react-apollo'
 import gql from 'graphql-tag'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { withUser } from 'react-native-authentication-helpers'
 
 import {timeDifferenceForDate} from '../utils/timeDifference'
-import {AUTH_TOKEN} from '../constants'
 
 class Link extends Component {
   state = {
-    authToken: null,
     hasVoted: false,
   }
 
+  componentDidMount() {
+    if (!this.props.user) {
+      return
+    }
+
+    const hasVoted = !!this.props.link.votes.find(
+      vote => vote.user.id === this.props.user.id
+    )
+
+    this.setState({ hasVoted })
+  }
+
   _voteForLink = async() => {
+    if (this.state.hasVoted) {
+      alert('You already voted for this link.')
+      return
+    }
+
     const linkId = this.props.link.id
     await this.props.voteMutation({
       variables: {
@@ -38,14 +53,9 @@ class Link extends Component {
     this.setState({ hasVoted: !this.state.hasVoted })
   }
 
-  componentDidMount = async () => {
-    const authToken = await AsyncStorage.getItem(AUTH_TOKEN)
-    this.setState({ authToken })
-  }
-
   render() {
-    const {authToken, hasVoted} = this.state
-    const {link} = this.props
+    const {hasVoted} = this.state
+    const {link, user} = this.props
 
     return (
       <View style={styles.link}>
@@ -57,7 +67,7 @@ class Link extends Component {
           {link.postedBy ? link.postedBy.name : 'Unknown'} {' '}
           {timeDifferenceForDate(link.createdAt)}
         </Text>
-        {authToken && (
+        {user && (
           <TouchableOpacity onPress={this._voteForLink}>
             <Ionicons name={hasVoted ? 'ios-thumbs-up' : 'ios-thumbs-up-outline'} size={25} color={'tomato'} />
           </TouchableOpacity>
@@ -94,4 +104,4 @@ const VOTE_MUTATION = gql`
     }
   }
 `
-export default graphql(VOTE_MUTATION, {name: 'voteMutation'})(Link)
+export default graphql(VOTE_MUTATION, {name: 'voteMutation'})(withUser(Link))

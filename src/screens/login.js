@@ -10,30 +10,18 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  AsyncStorage,
   TouchableOpacity,
 } from 'react-native'
 import {graphql, compose} from 'react-apollo'
 import gql from 'graphql-tag'
-
-import {AUTH_TOKEN} from '../constants'
+import { setUser, getUser, clearUser } from 'react-native-authentication-helpers'
 
 class Login extends Component {
   state = {
     hasRegister: true,
-    hasLogin: false,
     email: '',
     password: '',
     name: '',
-    authToken: '',
-  }
-
-  async componentDidMount() {
-    const authToken = await AsyncStorage.getItem(AUTH_TOKEN)
-    this.setState({authToken})
-    if (authToken) {
-      this.setState({hasLogin: true})
-    }
   }
 
   _confirm = async () => {
@@ -45,9 +33,9 @@ class Login extends Component {
           password,
         }
       })
-      const {token} = result.data.login
-      this.setState({hasLogin: true, authToken: token})
-      this._saveUserData(token)
+      const token = result.data.login.token
+      const id = result.data.login.user.id
+      this._saveUserData(id, token)
     } else {
       const result = await this.props.signupMutation({
         variables: {
@@ -56,25 +44,23 @@ class Login extends Component {
           password,
         }
       })
-      const {token} = result.data.signup
-      this.setState({hasLogin: true, authToken: token})
-      this._saveUserData(token)
+      const token = result.data.signup.token
+      const id = result.data.signup.user.id
+      this._saveUserData(id, token)
     }
     this.props.navigation.navigate('App')
   }
 
-  _saveUserData = async (token) => {
-    await AsyncStorage.setItem(AUTH_TOKEN, token)
+  _saveUserData = (id, token) => {
+    setUser({ id, token })
   }
 
-  _logout = async () => {
-    await AsyncStorage.removeItem(AUTH_TOKEN)
-    this.setState({authToken: null})
-    this.setState({hasLogin: false})
+  _logout = () => {
+    clearUser()
   }
 
   render() {
-    const {hasLogin} = this.state
+    const hasLogin = getUser() != null
     if (hasLogin) {
       return (
         <View style={s.container}>
@@ -172,6 +158,9 @@ const SIGNUP_MUTATION = gql`
   mutation SignupMutation($email: String!, $password: String!, $name: String!) {
     signup(email: $email, password: $password, name: $name) {
       token
+      user {
+        id
+      }
     }
   }
 `
@@ -179,6 +168,9 @@ const LOGIN_MUTATION = gql`
   mutation LoginMutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
+      user {
+        id
+      }
     }
   }
 `

@@ -4,7 +4,7 @@
  *
  * Distributed under terms of the MIT license.
  */
-import React from 'react'
+import React, { Component } from 'react'
 import {
   View,
   Text,
@@ -14,59 +14,72 @@ import {
 } from 'react-native'
 import {Query} from 'react-apollo'
 import gql from 'graphql-tag'
+import { withUser } from 'react-native-authentication-helpers'
 
 import Link from './link'
 
-const LinkList = () => (
-  <Query query={FEED_QUERY}>
-    {({ loading, error, data }) => {
-      if (loading) {
-        return (
-          <View style={styles.container}>
-            <ActivityIndicator size='large' color='tomato' />
-          </View>
-        )
-      }
+class LinkList extends Component {
+  state = {
+    hasVoted: false,
+  }
 
-      if (error) {
-        return (
-          <View style={styles.container}>
-            <Text>{error.message}</Text>
-          </View>
-        )
-      }
+  _updateCacheAfterVote = (store, createVote, linkId) => {
+    // 1
+    const data = store.readQuery({ query: FEED_QUERY })
+    // 2
+    const votedLink = data.feed.links.find(link => link.id === linkId)
+    votedLink.votes = createVote.link.votes
+    // 3
+    store.writeQuery({query: FEED_QUERY, data})
+  }
 
-      const linksToRender = data.feed.links
+  render() {
+    return (
+      <Query query={FEED_QUERY}>
+        {({ loading, error, data }) => {
+          if (loading) {
+            return (
+              <View style={styles.container}>
+                <ActivityIndicator size='large' color='tomato' />
+              </View>
+            )
+          }
 
-      return (
-        <View style={styles.container}>
-          <View style={styles.linkList}>
-            <FlatList
-              data={linksToRender}
-              keyExtractor={(item) => {
-                return item.id
-              }}
-              renderItem={({item}) => {
-                return (
-                  <Link key={item.id} link={item} updaeStoreAfterVote={_updateCacheAfterVote} />
-                )
-              }}
-            />
-          </View>
-        </View>
-      )
-    }}
-  </Query>
-)
+          if (error) {
+            return (
+              <View style={styles.container}>
+                <Text>{error.message}</Text>
+              </View>
+            )
+          }
 
-const _updateCacheAfterVote = (store, createVote, linkId) => {
-  // 1
-  const data = store.readQuery({ query: FEED_QUERY })
-  // 2
-  const votedLink = data.feed.links.find(link => link.id === linkId)
-  votedLink.votes = createVote.link.votes
-  // 3
-  store.writeQuery({query: FEED_QUERY, data})
+          const linksToRender = data.feed.links
+
+          return (
+            <View style={styles.container}>
+              <View style={styles.linkList}>
+                <FlatList
+                  data={linksToRender}
+                  keyExtractor={(item) => {
+                    return item.id
+                  }}
+                  renderItem={({item}) => {
+                    return (
+                      <Link
+                        key={item.id}
+                        link={item}
+                        updaeStoreAfterVote={this._updateCacheAfterVote}
+                      />
+                    )
+                  }}
+                />
+              </View>
+            </View>
+          )
+        }}
+      </Query>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -105,4 +118,4 @@ export const FEED_QUERY = gql`
   }
 `
 
-export default LinkList
+export default withUser(LinkList)
