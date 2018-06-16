@@ -4,7 +4,7 @@
  *
  * Distributed under terms of the MIT license.
  */
-import React, {Component} from 'react'
+import React from 'react'
 import {
   View,
   Text,
@@ -68,58 +68,6 @@ const _updateCacheAfterVote = (store, createVote, linkId) => {
   // 3
   store.writeQuery({query: FEED_QUERY, data})
 }
-
-// class LinkList extends Component {
-
-//   _updateCacheAfterVote = (store, createVote, linkId) => {
-//     // 1
-//     const data = store.readQuery({ query: FEED_QUERY })
-//     // 2
-//     const votedLink = data.feed.links.find(link => link.id === linkId)
-//     votedLink.votes = createVote.link.votes
-//     // 3
-//     store.writeQuery({query: FEED_QUERY, data})
-//   }
-//   render() {
-//     const {feedQuery} = this.props
-
-//     if (feedQuery && feedQuery.loading) {
-//       return (
-//         <View style={styles.container}>
-//           <ActivityIndicator size='large' color='tomato' />
-//         </View>
-//       )
-//     }
-
-//     if (feedQuery && feedQuery.error) {
-//       return (
-//         <View style={styles.container}>
-//           <Text>{feedQuery.error.message}</Text>
-//         </View>
-//       )
-//     }
-
-//     const linksToRender = feedQuery.feed.links
-
-//     return (
-//       <View style={styles.container}>
-//         <View style={styles.linkList}>
-//           <FlatList
-//             data={linksToRender}
-//             keyExtractor={(item) => {
-//               return item.id
-//             }}
-//             renderItem={({item}) => {
-//               return (
-//                 <Link key={item.id} link={item} updaeStoreAfterVote={this._updateCacheAfterVote} />
-//               )
-//             }}
-//           />
-//         </View>
-//       </View>
-//     )
-//   }
-// }
 
 const styles = StyleSheet.create({
   container: {
