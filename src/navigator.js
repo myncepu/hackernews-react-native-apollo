@@ -13,22 +13,10 @@ import CreateLink from './screens/createLink'
 import Login from './screens/login'
 import AuthLoadingScreen from './screens/authLoading'
 
-const AuthoNavigator = createSwitchNavigator(
-  {
-    AuthLoading: AuthLoadingScreen,
-    App: CreateLink,
-    Auth: Login,
-  },
-  {
-    initialRouteName: 'AuthLoading',
-  }
-)
-
-export default createBottomTabNavigator({
-  // Login,
+const AppTabNavigator = createBottomTabNavigator({
   LinkList,
-  // CreateLink,
-  AuthoNavigator,
+  CreateLink,
+  // Login,
 }, {
   navigationOptions: ({navigation}) => ({
     tabBarIcon: ({focused, tintColor}) => {
@@ -38,12 +26,12 @@ export default createBottomTabNavigator({
         case 'LinkList':
           iconName = `ios-home${focused ? '' : '-outline'}`
           break
-        case 'AuthoNavigator':
+        case 'CreateLink':
           iconName = `ios-create${focused ? '' : '-outline'}`
           break
-        case 'Login':
-          iconName = `ios-person${focused ? '' : '-outline'}`
-          break
+        // case 'Login':
+        //   iconName = `ios-person${focused ? '' : '-outline'}`
+        //   break
       }
       return <Ionicons name={iconName} size={25} color={tintColor} />
     },
@@ -53,3 +41,16 @@ export default createBottomTabNavigator({
     }
   })
 })
+
+const AppNavigator = createSwitchNavigator(
+  {
+    AuthLoading: AuthLoadingScreen,
+    App: AppTabNavigator,
+    Auth: Login,
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  }
+)
+
+export default AppNavigator
