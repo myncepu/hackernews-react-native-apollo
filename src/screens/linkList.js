@@ -17,7 +17,7 @@ import {Query} from 'react-apollo'
 import gql from 'graphql-tag'
 import { withUser } from 'react-native-authentication-helpers'
 
-import Link from './components/link'
+import LinkListComponent from './components/linkList'
 import HeaderActions from './components/HeaderActions'
 
 class LinkList extends Component {
@@ -78,28 +78,28 @@ class LinkList extends Component {
             )
           }
 
-          const linksToRender = data.feed.links
-
+          console.log('data', data)
           return (
-            <View style={styles.container}>
-              <View style={styles.linkList}>
-                <FlatList
-                  data={linksToRender}
-                  keyExtractor={(item) => {
-                    return item.id
-                  }}
-                  renderItem={({item}) => {
-                    return (
-                      <Link
-                        key={item.id}
-                        link={item}
-                        updaeStoreAfterVote={this._updateCacheAfterVote}
-                      />
-                    )
-                  }}
-                />
-              </View>
-            </View>
+            <LinkListComponent
+              error={error}
+              loading={loading}
+              links={data.feed.links}
+              canLoadMore={
+                data &&
+                  data.feed.count > data.feed.length
+              }
+              onLoadMore={this._handleLoadMore}
+              onRefresh={this._handleRefresh}
+              onVote={this._updateCacheAfterVote}
+              renderEmptyList={() => (
+                <View style={styles.noLinksContainer}>
+                  <Text style={styles.noLinksText}>
+                    No links have been posted yet! Sign in and post one to be the
+                    first.
+                  </Text>
+                </View>
+              )}
+            />
           )
         }}
       </Query>
@@ -138,6 +138,7 @@ export const FEED_QUERY = gql`
           }
         }
       }
+      count
     }
   }
 `
