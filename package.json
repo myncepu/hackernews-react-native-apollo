@@ -28,6 +28,7 @@
     "react-apollo": "^2.1.4",
     "react-native": "~0.55.2",
     "react-native-authentication-helpers": "^0.1.0",
+    "react-native-platform-touchable": "^1.1.1",
     "react-native-vector-icons": "^4.6.0",
     "react-navigation": "^2.2.5"
   }
