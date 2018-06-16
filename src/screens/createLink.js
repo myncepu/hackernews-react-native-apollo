@@ -12,11 +12,11 @@ import {
   StyleSheet,
 } from 'react-native'
 import gql from 'graphql-tag'
-import {graphql} from 'react-apollo'
+import {Mutation} from 'react-apollo'
 
 import {FEED_QUERY} from './linkList'
 
-class CreateLink extends Component {
+export default class CreateLink extends Component {
   state = {
     description: '',
     url: '',
@@ -29,37 +29,50 @@ class CreateLink extends Component {
         description,
         url,
       },
-      update: (store, {data: {post}}) => {
-        const data = store.readQuery({ query: FEED_QUERY })
-        data.feed.links.splice(0, 0, post)
-        store.writeQuery({
-          query: FEED_QUERY,
-          data,
-        })
-      }
     })
     this.props.navigation.navigate('LinkList')
   }
 
   render() {
     return (
-      <View style={s.form}>
-        <View style={s.inputs}>
-          <TextInput
-            style={s.input}
-            value={this.state.description}
-            onChangeText={description => this.setState({ description })}
-            placeholder='A description for the link'
-          />
-          <TextInput
-            style={s.input}
-            value={this.state.url}
-            onChangeText={url => this.setState({ url })}
-            placeholder='The URL for the link'
-          />
-        </View>
-        <Button title='Submit' onPress={this._createLink} />
-      </View>
+      <Mutation mutation={POST_MUTATION} >
+        {(postMutation) => (
+          <View style={s.form}>
+            <View style={s.inputs}>
+              <TextInput
+                style={s.input}
+                value={this.state.description}
+                onChangeText={description => this.setState({ description })}
+                placeholder='A description for the link'
+              />
+              <TextInput
+                style={s.input}
+                value={this.state.url}
+                onChangeText={url => this.setState({ url })}
+                placeholder='The URL for the link'
+              />
+            </View>
+            <Button
+              title='Submit'
+              onPress={() => {
+                const {description, url} = this.state
+                postMutation({
+                  variables: { description, url },
+                  update: (store, { data: { post } }) => {
+                    const data = store.readQuery({ query: FEED_QUERY })
+                    data.feed.links.splice(0, 0, post)
+                    store.writeQuery({
+                      query: FEED_QUERY,
+                      data,
+                    })
+                  }
+                })
+                this.props.navigation.navigate('LinkList')
+              }}
+            />
+          </View>
+        )}
+      </Mutation>
     )
   }
 }
@@ -90,8 +103,18 @@ const POST_MUTATION = gql`
       createdAt
       url
       description
+      postedBy {
+        id
+        name
+      }
+      votes {
+        id
+        user {
+          id
+        }
+      }
     }
   }
 `
 
-export default graphql(POST_MUTATION, {name: 'postMutation'})(CreateLink)
+// export default graphql(POST_MUTATION, {name: 'postMutation'})(CreateLink)
