@@ -16,7 +16,7 @@ import gql from 'graphql-tag'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { withUser } from 'react-native-authentication-helpers'
 
-import {timeDifferenceForDate} from '../utils/timeDifference'
+import {timeDifferenceForDate} from '../../utils/timeDifference'
 
 class Link extends Component {
   state = {

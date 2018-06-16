@@ -16,7 +16,7 @@ import {Query} from 'react-apollo'
 import gql from 'graphql-tag'
 import { withUser } from 'react-native-authentication-helpers'
 
-import Link from './link'
+import Link from './components/link'
 
 class LinkList extends Component {
   state = {
