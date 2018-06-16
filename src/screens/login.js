@@ -48,7 +48,7 @@ class Login extends Component {
       const id = result.data.signup.user.id
       this._saveUserData(id, token)
     }
-    this.props.navigation.navigate('App')
+    this.props.navigation.navigate('Links')
   }
 
   _saveUserData = (id, token) => {
