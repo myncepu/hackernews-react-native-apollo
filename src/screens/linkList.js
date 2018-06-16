@@ -12,7 +12,7 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native'
-import {graphql, Query} from 'react-apollo'
+import {Query} from 'react-apollo'
 import gql from 'graphql-tag'
 
 import Link from './link'
@@ -105,4 +105,4 @@ export const FEED_QUERY = gql`
   }
 `
 
-export default graphql(FEED_QUERY, {name: 'feedQuery'})(LinkList)
+export default LinkList
