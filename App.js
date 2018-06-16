@@ -1,13 +1,11 @@
 import React, {Component} from 'react'
-import {AsyncStorage} from 'react-native'
 import {ApolloProvider} from 'react-apollo'
 import {ApolloClient} from 'apollo-client'
 import {HttpLink} from 'apollo-link-http'
 import {InMemoryCache} from 'apollo-cache-inmemory'
 import {from} from 'apollo-client-preset'
 import { setContext } from 'apollo-link-context'
-
-import {AUTH_TOKEN} from './src/constants'
+import { getUser, loadUserAsync } from 'react-native-authentication-helpers'
 
 import App from './src'
 
@@ -18,7 +16,8 @@ const httpLink = new HttpLink({
 
 // 异步方式设置header
 const authMiddleware = setContext(async (req, { headers }) => {
-  const token = await AsyncStorage.getItem(AUTH_TOKEN)
+  await loadUserAsync()
+  const token = getUser() && getUser().token
 
   return {
     headers: {
