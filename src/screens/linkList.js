@@ -11,16 +11,41 @@ import {
   ActivityIndicator,
   StyleSheet,
   FlatList,
+  Platform,
 } from 'react-native'
 import {Query} from 'react-apollo'
 import gql from 'graphql-tag'
 import { withUser } from 'react-native-authentication-helpers'
 
 import Link from './components/link'
+import HeaderActions from './components/HeaderActions'
 
 class LinkList extends Component {
   state = {
     hasVoted: false,
+  }
+
+  static navigationOptions = props => {
+    return {
+      headerTitle: (
+        <View>
+          <Text>Link List</Text>
+        </View>
+      ),
+      headerRight: (
+        <HeaderActions.Right
+          navigation={props.navigation}
+          onCreateLink={() => {
+            return null
+          }}
+        />
+      ),
+      ...Platform.select({
+        ios: {
+          headerLeft: <HeaderActions.Left navigation={props.navigation} />,
+        },
+      }),
+    }
   }
 
   _updateCacheAfterVote = (store, createVote, linkId) => {
@@ -85,7 +110,6 @@ class LinkList extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
     justifyContent: 'center'
   },
   linkList: {
