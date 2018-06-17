@@ -5,12 +5,12 @@
  * Distributed under terms of the MIT license.
  */
 import React from 'react'
-import { Platform } from 'react-native'
+import { View, Platform, ActivityIndicator, StyleSheet } from 'react-native'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 
 import SearchLayout from '../components/react-navigation-addon-search-layout'
-import LinkList from './linkList'
+import LinkList from './components/linkList'
 
 class SearchScreen extends React.Component {
   state = {
@@ -25,7 +25,7 @@ class SearchScreen extends React.Component {
         headerBackgroundColor='green'
         headerTintColor="#fff"
         onChangeQuery={this._handleQueryChange}
-        onSubmit={this._executeSearch}
+        onSubmit={() => null}
         searchInputSelectionColor="#fff"
         searchInputTextColor={Platform.OS === 'android' ? '#fff' : 'black'}
         searchInputPlaceholderTextColor={
@@ -38,12 +38,21 @@ class SearchScreen extends React.Component {
           error={this.state.error}
           onVote={this._updateCacheAfterVote}
         />
+        { this.state.loading &&
+            <View style={styles.loading}>
+              <ActivityIndicator
+                animating
+                size='large'
+              />
+            </View>
+        }
       </SearchLayout>
     )
   }
 
   _handleQueryChange = searchText => {
-    this.setState({ searchText })
+    // this.setState({ searchText })
+    this._executeSearch(searchText)
   }
 
   _updateCacheAfterVote = (store, createVote, linkId) => {
@@ -60,8 +69,8 @@ class SearchScreen extends React.Component {
     })
   };
 
-  _executeSearch = async () => {
-    const { searchText } = this.state
+  _executeSearch = async (searchText) => {
+    // const { searchText } = this.state
     if (!searchText) {
       this.setState({ links: [] })
       return
@@ -73,7 +82,7 @@ class SearchScreen extends React.Component {
         query: ALL_LINKS_SEARCH_QUERY,
         variables: { searchText },
       })
-      const links = result.data.allLinks
+      const links = result.data.feed.links
       this.setState({ links })
     } finally {
       this.setState({ loading: false })
@@ -83,30 +92,37 @@ class SearchScreen extends React.Component {
 
 const ALL_LINKS_SEARCH_QUERY = gql`
   query AllLinksSearchQuery($searchText: String!) {
-    allLinks(
-      filter: {
-        OR: [
-          { url_contains: $searchText }
-          { description_contains: $searchText }
-        ]
-      }
-    ) {
-      id
-      url
-      description
-      createdAt
-      postedBy {
+    feed(filter: $searchText)
+    {
+      links {
         id
-        name
-      }
-      votes {
-        id
-        user {
+        url
+        createdAt
+        postedBy {
           id
+          name
+        }
+        votes {
+          id
+          user {
+            id
+          }
         }
       }
     }
   }
 `
+
+const styles = StyleSheet.create({
+  loading: {
+    position: 'absolute', 
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+})
 
 export default withApollo(SearchScreen)
