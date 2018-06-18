@@ -16,8 +16,7 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { withUser } from 'react-native-authentication-helpers'
 
-// import LinkListContainer from './components/linkListContainer'
-import LinkListComponent from './components/linkList'
+import LinkList from './components/linkList'
 import HeaderActions from './components/HeaderActions'
 
 const NEW_LINK_SUBSCRIPTION = gql`
@@ -65,7 +64,7 @@ export const FEED_QUERY = gql`
     }
   }
 `
-class LinkList extends Component {
+class Links extends Component {
   state = {
     hasVoted: false,
   }
@@ -113,28 +112,7 @@ class LinkList extends Component {
 
   _subscribeToNewVotes = () => {
     this._unsubscribe = this.props.feedQuery.subscribeToMore({
-      document: gql`
-          subscription {
-            newLink {
-            node {
-              id
-              url
-              description
-              createdAt
-              postedBy {
-                id
-                name
-              }
-              votes {
-                id
-                user {
-                  id
-                }
-              }
-            }
-          }
-        }
-      `,
+      document: NEW_LINK_SUBSCRIPTION,
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev
         const newAllLInks = [
@@ -174,7 +152,7 @@ class LinkList extends Component {
     }
 
     return (
-      <LinkListComponent
+      <LinkList
         error={error}
         loading={loading}
         links={feed.links}
@@ -207,7 +185,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const LinkWithUser = withUser(LinkList)
+const LinkWithUser = withUser(Links)
 export default graphql(FEED_QUERY, {
   name: 'feedQuery',
 })(LinkWithUser)
