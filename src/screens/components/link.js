@@ -17,6 +17,7 @@ import { maybeAddProtocol, getHostname } from '../../utils/url'
 import { timeDifferenceForDate  }from '../../utils/timeDifference'
 
 class Link extends PureComponent {
+
   render() {
     const { postedBy } = this.props.link
     const postedByName = (postedBy && postedBy.name) || 'Unknown'
@@ -83,12 +84,16 @@ class Link extends PureComponent {
     }
 
     return !!this.props.link.votes.find(
-      vote => vote.user.id === this.props.user.id
+      vote => {
+        // console.log('vote.user.id', vote.user.id)
+        // console.log('this.props.user.id', this.props.user.id)
+        return vote.user.id === this.props.user.id
+      }
     )
   };
 
   _voteForLink = async () => {
-    const userId = this.props.user.id
+    // const userId = this.props.user.id
     if (this._userVotedForLink()) {
       console.log('User already voted for this link.')
       return
@@ -97,11 +102,10 @@ class Link extends PureComponent {
     const linkId = this.props.link.id
     await this.props.createVoteMutation({
       variables: {
-        userId,
         linkId,
       },
-      update: (store, { data: { createVote } }) => {
-        this.props.updateStoreAfterVote(store, createVote, linkId)
+      update: (store, { data: { vote } }) => {
+        this.props.updateStoreAfterVote(store, vote, linkId)
       },
     })
   };
@@ -177,8 +181,8 @@ const styles = StyleSheet.create({
 })
 
 const CREATE_VOTE_MUTATION = gql`
-  mutation CreateVoteMutation($userId: ID!, $linkId: ID!) {
-    createVote(userId: $userId, linkId: $linkId) {
+  mutation CreateVoteMutation($linkId: ID!) {
+    vote(linkId: $linkId) {
       id
       link {
         votes {
