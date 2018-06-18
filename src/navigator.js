@@ -10,7 +10,7 @@ import {
   createSwitchNavigator
 } from 'react-navigation'
 
-import LinkList from './screens/linkList'
+import LinkList from './screens/links'
 import CreateLink from './screens/createLink'
 import Login from './screens/login'
 import AuthLoadingScreen from './screens/authLoading'
