@@ -14,7 +14,7 @@ import {
 import gql from 'graphql-tag'
 import {Mutation} from 'react-apollo'
 
-import {FEED_QUERY} from './linkList'
+import {FEED_QUERY} from './links'
 
 export default class CreateLink extends Component {
   state = {
