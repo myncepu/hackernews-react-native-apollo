@@ -32,7 +32,6 @@ class SearchScreen extends React.Component {
           Platform.OS === 'ios' ? '#898989' : '#fafafa'
         }>
         <LinkList
-          hideNumbers={true}
           loading={this.state.loading}
           links={this.state.links}
           error={this.state.error}
@@ -98,6 +97,7 @@ const ALL_LINKS_SEARCH_QUERY = gql`
         id
         url
         createdAt
+        description
         postedBy {
           id
           name

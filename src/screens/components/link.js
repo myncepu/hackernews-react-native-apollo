@@ -39,7 +39,7 @@ class Link extends PureComponent {
                 {this.props.link.description}
               </Text>
               <Text style={styles.url} numberOfLines={1}>
-                {getHostname(this.props.link.url)}
+                {this.props.link.url}
               </Text>
             </View>
           </View>

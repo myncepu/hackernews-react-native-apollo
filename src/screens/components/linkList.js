@@ -11,8 +11,10 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native'
+import Touchable from 'react-native-platform-touchable'
 
 import Link from './link'
+import Colors from '../../constants/Colors'
 
 class LinkList extends Component {
 
@@ -62,6 +64,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     justifyContent: 'center',
+  },
+  loadMoreButton: {
+    marginTop: 5,
+    paddingVertical: 15,
+    backgroundColor: Colors.almostWhite,
+    borderColor: Colors.lightGrey,
+    borderWidth: StyleSheet.hairlineWidth,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadMoreText: {
+    color: Colors.darkGrey,
   },
 })
 

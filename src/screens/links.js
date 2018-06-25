@@ -42,28 +42,29 @@ const NEW_LINK_SUBSCRIPTION = gql`
   }
 `
 export const FEED_QUERY = gql`
-  query FeedQuery{
-    feed {
-      links {
+  query FeedQuery($first: Int, $skip: Int, $orderBy: LinkOrderByInput) {
+  feed(first: $first, skip: $skip, orderBy: $orderBy) {
+    count
+    links {
+      id
+      createdAt
+      url
+      description
+      postedBy {
         id
-        createdAt
-        url
-        description
-        postedBy {
+        name
+      }
+      votes {
+        id
+        user {
           id
-          name
-        }
-        votes {
-          id
-          user {
-           id
-          }
         }
       }
-      count
     }
   }
+}
 `
+
 class Links extends Component {
   state = {
     hasVoted: false,
@@ -131,6 +132,10 @@ class Links extends Component {
     })
   }
 
+  _handleLoadMore = () => {
+    this.props.loadMoreLinks()
+  }
+
   render() {
     const { loading, error, feed } = this.props.feedQuery
     // console.log('this.props.feedQuery', Object.getOwnPropertyNames(this.props.feedQuery))
@@ -156,7 +161,7 @@ class Links extends Component {
         error={error}
         loading={loading}
         links={feed.links}
-        canLoadMore={ feed && feed.count > feed.length }
+        canLoadMore={ feed && feed.count > feed.links.length }
         onLoadMore={this._handleLoadMore}
         onRefresh={this._handleRefresh}
         onVote={this._updateCacheAfterVote}
@@ -185,7 +190,49 @@ const styles = StyleSheet.create({
   },
 })
 
+const LINKS_PER_PAGE = 5
+
 const LinkWithUser = withUser(Links)
 export default graphql(FEED_QUERY, {
   name: 'feedQuery',
+  options: () => ({
+    variables: {
+      first: LINKS_PER_PAGE,
+      skip: 0,
+      orderBy: 'createdAt_DESC',
+    },
+  }),
+  props: ({ feedQuery, ownProps }) => {
+    let skip = 0
+    if (feedQuery.feed) {
+      skip = feedQuery.feed.links.length
+    }
+
+    return {
+      feedQuery,
+      ...ownProps,
+      loadMoreLinks: () => {
+        return feedQuery.fetchMore({
+          variables: {
+            first: LINKS_PER_PAGE,
+            skip,
+            orderBy: 'createdAt_DESC',
+          },
+          updateQuery: (previous, { fetchMoreResult }) => {
+            if (!fetchMoreResult.feed) {
+              return previous
+            }
+            const newAllLinks = [...previous.feed.links, ...fetchMoreResult.feed.links]
+            const newFeed = Object.assign({}, previous.feed, {
+              links: newAllLinks,
+            })
+            const next = Object.assign({}, previous, {
+              feed: { ...newFeed },
+            })
+            return next
+          },
+        })
+      },
+    }
+  },
 })(LinkWithUser)
